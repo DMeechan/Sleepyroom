@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import './sleep_tracker.dart';
-import './sleep_logs.dart';
+import 'pages/sleep_tracker.dart';
+import 'pages/sleep_logs.dart';
 
 void main() => runApp(MyApp());
 
