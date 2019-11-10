@@ -25,7 +25,13 @@ class SleepLog {
       this.lightScore,
       this.noiseScore});
 
-  Future<List<SleepLog>> getAll() async {
+  finish({DateTime endDate, int lightScore, int noiseScore}) {
+    this.endDate = endDate;
+    this.lightScore = lightScore;
+    this.noiseScore = noiseScore;
+  }
+
+  static Future<List<SleepLog>> getAll() async {
     final db = await DatabaseHelper().db;
 
     final List<Map<String, dynamic>> maps = await db.query(table);
@@ -36,7 +42,7 @@ class SleepLog {
     });
   }
 
-  Future<SleepLog> get(int id) async {
+  static Future<SleepLog> get(int id) async {
     final db = await DatabaseHelper().db;
 
     List<Map> result = await db.query(table,
@@ -86,18 +92,20 @@ class SleepLog {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'startDate': startDate,
-      'endDate': endDate,
+      'startDate': toEpoch(startDate),
+      'endDate': toEpoch(endDate),
       'lightScore': lightScore,
       'noiseScore': noiseScore
     };
   }
 
-  SleepLog fromMap(Map<String, dynamic> map) {
+  static SleepLog fromMap(Map<String, dynamic> map) {
     return SleepLog.complete(
       id: map['id'],
       startDate: fromEpoch(map['startDate']),
-      endDate: fromEpoch(map['endDate']), // need to null check here
+      endDate: (map['endDate'] != null)
+          ? fromEpoch(map['endDate'])
+          : null, // need to null check here
       lightScore: map['lightScore'],
       noiseScore: map['noiseScore'],
     );

@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:path/path.dart';
-import 'package:sleepyroom/entities/sleep_log.dart';
-import 'package:sleepyroom/entities/snapshot.dart';
+import 'package:sleepyroom/models/sleep_log.dart';
+import 'package:sleepyroom/models/snapshot.dart';
 import 'package:sqflite/sqflite.dart';
 
 // Source: https://grokonez.com/flutter/flutter-sqlite-example-crud-sqflite-example

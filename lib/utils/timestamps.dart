@@ -3,5 +3,5 @@ DateTime fromEpoch(int epoch) {
 }
 
 int toEpoch(DateTime dateTime) {
-  return dateTime.millisecondsSinceEpoch;
+  return dateTime != null ? dateTime.millisecondsSinceEpoch : null;
 }

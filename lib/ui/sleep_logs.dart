@@ -14,7 +14,7 @@ class _SleepLogsState extends State<SleepLogs> {
 
   /// Summary contains average sleep score over last 7 days and any recommendations
   Widget _buildSummary() {
-
+    return null;
   }
 
   /// Show list of every sleep log recorded: date, light score, sound score
