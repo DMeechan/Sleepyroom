@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sleepyroom/models/sleep_log.dart';
+import 'package:sleepyroom/ui/helpers.dart';
 import 'package:sleepyroom/utils/timestamps.dart';
 
 class SleepLogs extends StatefulWidget {
@@ -37,7 +38,7 @@ class _SleepLogsState extends State<SleepLogs> {
                   return _buildRow(snapshot.data[index]);
                 });
           } else {
-            return Center(child: CircularProgressIndicator());
+            return loading();
           }
         });
   }
