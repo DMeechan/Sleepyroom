@@ -41,5 +41,7 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>NSMicrophoneUsageDescription</key>
+    <string>Sleepyroom would like to use your microphone to measure noise levels</string>
 </dict>
 </plist>
