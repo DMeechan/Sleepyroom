@@ -21,15 +21,6 @@ dependencies:
     sdk: flutter
   sqflite: ^1.1.7+1
   path: ^1.6.4
-  # mic_stream: ^0.2.0+2
-  # possible bug related to AndroidX: https://github.com/anarchuser/mic_stream/issues/6#issuecomment-549155088
-  # https://github.com/once10301/permission/issues/22#issuecomment-485397217
-  #  permission:
-  #    git:
-  #      url: https://github.com/devadrianapostol/permission
-  #  mic_stream:
-  #    git:
-  #      url: https://github.com/anarchuser/mic_stream
   flutter_audio_recorder: ^0.5.4
   path_provider:
   audioplayers:

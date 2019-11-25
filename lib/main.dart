@@ -3,12 +3,15 @@ import 'package:sleepyroom/datebase_helper.dart';
 import 'package:sleepyroom/models/sleep_log.dart';
 import 'package:sleepyroom/models/snapshot.dart';
 
-import 'ui/sleep_tracker.dart';
 import 'ui/sleep_logs.dart';
+import 'ui/sleep_tracker.dart';
 
 void main() async {
   await DatabaseHelper().db;
-  await testSleepLogs();
+  print(await Snapshot().getAll());
+  print(await SleepLog.getAll());
+
+//  await testSleepLogs();
   return runApp(MyApp());
 }
 
@@ -31,7 +34,6 @@ class MyApp extends StatelessWidget {
 // Two pages:
 // - sleep logs
 // - sleep tracker
-
 
 /*
 TEST DATABASE STUFFS

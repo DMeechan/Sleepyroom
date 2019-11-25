@@ -20,7 +20,7 @@ class Snapshot {
   static Future<Snapshot> withoutId({timestamp, lightScore, noiseScore}) async {
     final Database db = await DatabaseHelper().db;
     List<Map> latestSnapshots = await db.query(table,
-        columns: [columnId], orderBy: "$columnId ASC", limit: 1);
+        columns: [columnId], orderBy: "$columnId DESC", limit: 1);
 
     print("latestSnapshots");
     print(latestSnapshots);

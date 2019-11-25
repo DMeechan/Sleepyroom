@@ -34,8 +34,11 @@ class _SleepLogsState extends State<SleepLogs> {
                 itemBuilder: (context, i) {
                   if (i.isOdd) return Divider();
 
-                  final index = i ~/ 2;
-                  return _buildRow(snapshot.data[index]);
+                  final position = i ~/ 2;
+                  final dataIndex = snapshot.data.length - position -
+                      1; // render data in reverse order
+                  print(dataIndex);
+                  return _buildRow(snapshot.data[dataIndex]);
                 });
           } else {
             return loading();

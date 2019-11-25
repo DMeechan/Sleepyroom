@@ -25,6 +25,15 @@ class SleepLog {
       this.lightScore,
       this.noiseScore});
 
+  static Future<SleepLog> withoutId({startDate}) async {
+    final Database db = await DatabaseHelper().db;
+    List<Map> latestSleepLogs = await db.query(table,
+        columns: [columnId], orderBy: "$columnId DESC", limit: 1);
+
+    int latestId = latestSleepLogs.length > 0 ? latestSleepLogs.first['id'] : 0;
+    return new SleepLog(latestId + 1, startDate);
+  }
+
   finish({DateTime endDate, int lightScore, int noiseScore}) {
     this.endDate = endDate;
     this.lightScore = lightScore;

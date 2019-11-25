@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
+import 'package:sleepyroom/models/sleep_log.dart';
 import 'package:sleepyroom/models/snapshot.dart';
 import 'package:sleepyroom/ui/helpers.dart';
 
@@ -19,6 +20,7 @@ class _SleepTrackerState extends State<SleepTracker> {
   StreamSubscription<double> _dbPeakSubscription;
   DateTime _timestamp;
   double _dbLevel;
+  SleepLog _currentSleepLog;
 
   @override
   void initState() {
@@ -45,6 +47,9 @@ class _SleepTrackerState extends State<SleepTracker> {
     String path = await _flutterSound.startRecorder(null);
     print('recording to: $path');
 
+    _currentSleepLog = await SleepLog.withoutId(startDate: DateTime.now());
+    _currentSleepLog.insert();
+
     setState(() {
       status = Status.Recording;
       _buttonIcon = _getPlayerIcon(status);
@@ -59,15 +64,24 @@ class _SleepTrackerState extends State<SleepTracker> {
                 noiseScore: _dbLevel.toInt());
 
             print(snapshot);
-            var itemsCreated = await snapshot.insert();
+            var snapshotId = await snapshot.insert();
 
-            print("Created snapshots: $itemsCreated");
-            print(this._dbLevel);
+            print("Created snapshot with ID: $snapshotId at $_dbLevel DB");
           });
     });
   }
 
   void _stopRecording() async {
+    // TODO: calculate noise score from the night's snapshots :D
+
+    _currentSleepLog.endDate = DateTime.now();
+    _currentSleepLog.noiseScore = 5;
+    _currentSleepLog.lightScore = -1;
+    await _currentSleepLog.update();
+
+    print("New sleep log added:");
+    print(await SleepLog.getAll());
+
     String result = await _flutterSound.stopRecorder();
     print("Stopped recording: $result");
 
@@ -102,7 +116,7 @@ class _SleepTrackerState extends State<SleepTracker> {
     super.dispose();
   }
 
-  void _opt() async {
+  void _clickHandler() async {
     switch (status) {
       case Status.Initialised:
         {
@@ -158,7 +172,7 @@ class _SleepTrackerState extends State<SleepTracker> {
                 child: new InkWell(
                   onTap: () {
                     print("TAP: Starting tracker...");
-                    _opt();
+                    _clickHandler();
                   },
                   child: new Column(
                       mainAxisAlignment: MainAxisAlignment.center,
