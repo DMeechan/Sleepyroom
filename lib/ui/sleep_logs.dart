@@ -35,7 +35,8 @@ class _SleepLogsState extends State<SleepLogs> {
                   if (i.isOdd) return Divider();
 
                   final position = i ~/ 2;
-                  final dataIndex = snapshot.data.length - position -
+                  final dataIndex = snapshot.data.length -
+                      position -
                       1; // render data in reverse order
                   print(dataIndex);
                   return _buildRow(snapshot.data[dataIndex]);
@@ -47,13 +48,14 @@ class _SleepLogsState extends State<SleepLogs> {
   }
 
   Widget _buildRow(SleepLog sleepLog) {
-    final start = toWeekday(sleepLog.startDate.weekday) + " at " + sleepLog.startDate.hour.toString() + ":" + sleepLog.startDate.minute.toString();
+    final start = toWeekday(sleepLog.startDate.weekday) +
+        " at " +
+        sleepLog.startDate.hour.toString() +
+        ":" +
+        sleepLog.startDate.minute.toString();
 
     return ListTile(
-        title: Text(start),
-        trailing: Text(sleepLog.noiseScore.toString() +
-            " | " +
-            sleepLog.lightScore.toString()));
+        title: Text(start), trailing: Text(sleepLog.noiseScore.toString()));
   }
 
   Widget build(BuildContext context) {

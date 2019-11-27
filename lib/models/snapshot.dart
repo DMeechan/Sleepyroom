@@ -1,4 +1,5 @@
 import 'package:sleepyroom/datebase_helper.dart';
+import 'package:sleepyroom/models/sleep_log.dart';
 import 'package:sleepyroom/utils/timestamps.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -36,6 +37,25 @@ class Snapshot {
     final Database db = await DatabaseHelper().db;
 
     final List<Map<String, dynamic>> maps = await db.query(table);
+
+    return List.generate(maps.length, (i) {
+      var map = maps[i];
+      return fromMap(map);
+    });
+  }
+
+  static Future<List<Snapshot>> getAllFor(SleepLog log) async {
+    final Database db = await DatabaseHelper().db;
+
+    final List<Map<String, dynamic>> maps = await db.query(table,
+        columns: [
+          columnId,
+          columnTimestamp,
+          columnLightScore,
+          columnNoiseScore
+        ],
+        where: '$columnTimestamp >= ? AND $columnTimestamp <= ?',
+        whereArgs: [toEpoch(log.startDate), toEpoch(log.endDate)]);
 
     return List.generate(maps.length, (i) {
       var map = maps[i];
@@ -100,7 +120,7 @@ class Snapshot {
   }
 
   // TODO: this should probs be Snapshot.fromMap to be a constructor
-  Snapshot fromMap(Map<String, dynamic> map) {
+  static Snapshot fromMap(Map<String, dynamic> map) {
     return Snapshot(
       id: map['id'],
       timestamp: fromEpoch(map['timestamp']),

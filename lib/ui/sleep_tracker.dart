@@ -18,8 +18,6 @@ class _SleepTrackerState extends State<SleepTracker> {
 
   FlutterSound _flutterSound;
   StreamSubscription<double> _dbPeakSubscription;
-  DateTime _timestamp;
-  double _dbLevel;
   SleepLog _currentSleepLog;
 
   @override
@@ -55,32 +53,34 @@ class _SleepTrackerState extends State<SleepTracker> {
       _buttonIcon = _getPlayerIcon(status);
       _dbPeakSubscription =
           _flutterSound.onRecorderDbPeakChanged.listen((value) async {
-            this._dbLevel = value;
-            this._timestamp = DateTime.now();
+        var _dbLevel = value;
+        var _timestamp = DateTime.now();
 
-            Snapshot snapshot = await Snapshot.withoutId(
-                timestamp: _timestamp,
-                lightScore: -1,
-                noiseScore: _dbLevel.toInt());
+        Snapshot snapshot = await Snapshot.withoutId(
+            timestamp: _timestamp,
+            lightScore: -1,
+            noiseScore: _dbLevel.toInt());
 
-            print(snapshot);
-            var snapshotId = await snapshot.insert();
+        print(snapshot);
+        var snapshotId = await snapshot.insert();
 
-            print("Created snapshot with ID: $snapshotId at $_dbLevel DB");
-          });
+        print("Created snapshot with ID: $snapshotId at $_dbLevel DB");
+      });
     });
   }
 
   void _stopRecording() async {
-    // TODO: calculate noise score from the night's snapshots :D
-
+    // Get snapshots for the sleep log
     _currentSleepLog.endDate = DateTime.now();
-    _currentSleepLog.noiseScore = 5;
-    _currentSleepLog.lightScore = -1;
-    await _currentSleepLog.update();
+    var snapshots = await Snapshot.getAllFor(_currentSleepLog);
 
-    print("New sleep log added:");
-    print(await SleepLog.getAll());
+    // Calculate scores
+    _currentSleepLog.lightScore = -1;
+    _currentSleepLog.noiseScore =
+        snapshots.fold(0, (total, snapshot) => total + snapshot.noiseScore);
+
+    // Save the scores
+    await _currentSleepLog.update();
 
     String result = await _flutterSound.stopRecorder();
     print("Stopped recording: $result");
@@ -91,7 +91,6 @@ class _SleepTrackerState extends State<SleepTracker> {
 
     setState(() {
       status = Status.Stopped;
-      _dbLevel = null;
       _dbPeakSubscription = null;
       _buttonIcon = _getPlayerIcon(status);
     });
@@ -104,7 +103,7 @@ class _SleepTrackerState extends State<SleepTracker> {
     _flutterSound.onPlayerStateChanged.listen((e) {
       if (e != null) {
         DateTime date =
-        new DateTime.fromMillisecondsSinceEpoch(e.currentPosition.toInt());
+            new DateTime.fromMillisecondsSinceEpoch(e.currentPosition.toInt());
         print(date);
       }
     });
@@ -112,7 +111,9 @@ class _SleepTrackerState extends State<SleepTracker> {
 
   @override
   void dispose() {
-    _flutterSound.stopRecorder();
+    if (_flutterSound.isRecording) {
+      _flutterSound.stopRecorder();
+    }
     super.dispose();
   }
 
