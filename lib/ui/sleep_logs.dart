@@ -60,13 +60,16 @@ class _SleepLogsState extends State<SleepLogs> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text(widget.title), backgroundColor: Colors.deepPurpleAccent, actions: <Widget>[
-          IconButton(
-            icon:
-                Icon(Icons.airline_seat_individual_suite, color: Colors.white),
-            onPressed: _pushSleepTracker,
-          )
-        ]),
+        appBar: AppBar(
+            title: Text(widget.title),
+            backgroundColor: Colors.deepPurpleAccent,
+            actions: <Widget>[
+              IconButton(
+                icon: Icon(Icons.airline_seat_individual_suite,
+                    color: Colors.white),
+                onPressed: _pushSleepTracker,
+              )
+            ]),
         body: _buildSleepLogs());
   }
 }
