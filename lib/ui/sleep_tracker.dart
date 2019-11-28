@@ -12,6 +12,15 @@ class SleepTracker extends StatefulWidget {
   _SleepTrackerState createState() => _SleepTrackerState();
 }
 
+const initialTitleText = "Tap to start!";
+const initialBodyText = "Don't forget to turn this off when you wake up!";
+
+const recordingTitleText = "Tap to finish!";
+const recordingBodyText = "";
+
+const finalTitleText = "Recording complete!";
+const finalBodyText = "";
+
 class _SleepTrackerState extends State<SleepTracker> {
   Status status;
   Widget _buttonIcon = Icon(Icons.do_not_disturb_on);
@@ -19,10 +28,15 @@ class _SleepTrackerState extends State<SleepTracker> {
   FlutterSound _flutterSound;
   StreamSubscription<double> _dbPeakSubscription;
   SleepLog _currentSleepLog;
+  String titleText;
+  String bodyText;
 
   @override
   void initState() {
     super.initState();
+    titleText = initialTitleText;
+    bodyText = initialBodyText;
+
     Future.microtask(() {
       _prepare();
     });
@@ -35,7 +49,7 @@ class _SleepTrackerState extends State<SleepTracker> {
       _buttonIcon = _getPlayerIcon(status);
     });
 
-    var updateIntervalInSecs = 0.3;
+    var updateIntervalInSecs = 1.0;
     _flutterSound.setDbLevelEnabled(true);
     _flutterSound.setDbPeakLevelUpdate(updateIntervalInSecs);
   }
@@ -131,7 +145,11 @@ class _SleepTrackerState extends State<SleepTracker> {
         }
       case Status.Stopped:
         {
-          _prepare();
+          setState(() {
+            status = Status.Initialised;
+//            _flutterSound = new FlutterSound();
+//            _buttonIcon = _getPlayerIcon(status);
+          });
           break;
         }
 
@@ -148,14 +166,20 @@ class _SleepTrackerState extends State<SleepTracker> {
     switch (status) {
       case Status.Initialised:
         {
+          titleText = initialTitleText;
+          bodyText = initialBodyText;
           return empty();
         }
       case Status.Recording:
         {
+          titleText = recordingTitleText;
+          bodyText = recordingBodyText;
           return Icon(Icons.stop);
         }
       case Status.Stopped:
         {
+          titleText = finalTitleText;
+          bodyText = finalBodyText;
           return Icon(Icons.check);
         }
       default:
@@ -167,28 +191,27 @@ class _SleepTrackerState extends State<SleepTracker> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: Text("Track your sleep environment")),
-        body: new Center(
-            child: new Material(
-                color: Colors.deepPurple,
-                child: new InkWell(
-                  onTap: () {
-                    print("TAP: Starting tracker...");
-                    _clickHandler();
-                  },
-                  child: new Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        new Text("Tap to start!",
-                            style: new TextStyle(
-                                color: Colors.white,
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold)),
-                        new Text(
-                            "Don't forget to turn this off when you wake up!",
-                            style: new TextStyle(
-                                color: Colors.white, fontSize: 16)),
-                        _buttonIcon
-                      ]),
-                ))));
+        body: SizedBox.expand(
+          child: new Material(
+              color: Colors.deepPurple,
+              child: new InkWell(
+                onTap: () {
+                  _clickHandler();
+                },
+                child: new Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      new Text(titleText != null ? titleText : "",
+                          style: new TextStyle(
+                              color: Colors.white,
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold)),
+                      new Text(bodyText != null ? bodyText : "",
+                          style:
+                              new TextStyle(color: Colors.white, fontSize: 16)),
+                      _buttonIcon
+                    ]),
+              )),
+        ));
   }
 }

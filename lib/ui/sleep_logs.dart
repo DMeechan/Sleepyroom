@@ -38,7 +38,7 @@ class _SleepLogsState extends State<SleepLogs> {
                   final dataIndex = snapshot.data.length -
                       position -
                       1; // render data in reverse order
-                  print(dataIndex);
+
                   return _buildRow(snapshot.data[dataIndex]);
                 });
           } else {
@@ -60,7 +60,7 @@ class _SleepLogsState extends State<SleepLogs> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text(widget.title), actions: <Widget>[
+        appBar: AppBar(title: Text(widget.title), backgroundColor: Colors.deepPurpleAccent, actions: <Widget>[
           IconButton(
             icon:
                 Icon(Icons.airline_seat_individual_suite, color: Colors.white),
